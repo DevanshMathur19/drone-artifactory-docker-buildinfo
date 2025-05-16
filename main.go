@@ -77,6 +77,9 @@ func Exec(ctx context.Context, args Args) error {
 	if err != nil {
 		logrus.Fatalln("error parsing Docker image:", err)
 	}
+	
+	// Log the parsed Docker image components
+	logrus.Infof("Parsed Docker image - Repository: %s, Image Name: %s, Image Tag: %s", repo, imageName, imageTag)
 
 	// Sanitize the URL for JFrog
 	sanitizedURL, err := sanitizeURL(args.URL)
@@ -105,6 +108,14 @@ func Exec(ctx context.Context, args Args) error {
 		logrus.Fatalln("error creating query.json file:", err)
 	}
 	defer queryFile.Close()
+	
+	// Log the query content as JSON string
+	queryJSON, err := json.MarshalIndent(query, "", "  ")
+	if err != nil {
+		logrus.Errorf("Error marshaling query to JSON: %v", err)
+	} else {
+		logrus.Infof("Query file contents:\n%s", string(queryJSON))
+	}
 
 	// Encode the query into the JSON file
 	encoder := json.NewEncoder(queryFile)
