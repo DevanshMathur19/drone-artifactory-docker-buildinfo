@@ -199,19 +199,19 @@ func Exec(ctx context.Context, args Args) error {
 // extractSha256FromOutput extracts the SHA256 hash from the command output.
 func extractSha256FromOutput(output string) (string, error) {
 	// Log the raw input
-	logrus.Debugf("Raw output received: %s", output)
+	logrus.Infof("Raw output received: %s", output)
 	
 	// Split the output into lines
 	lines := strings.Split(output, "\n")
-	logrus.Debugf("Split output into %d lines", len(lines))
+	logrus.Infof("Split output into %d lines", len(lines))
 
 	// Find the line where the JSON array starts
 	var jsonStr string
 	startIndex := -1
 	for i, line := range lines {
-		logrus.Debugf("Checking line %d: %s", i, line)
+		logrus.Infof("Checking line %d: %s", i, line)
 		if strings.HasPrefix(line, "[") {
-			logrus.Debugf("Found JSON array start at line %d", i)
+			logrus.Infof("Found JSON array start at line %d", i)
 			startIndex = i
 			break
 		}
@@ -219,7 +219,7 @@ func extractSha256FromOutput(output string) (string, error) {
 
 	if startIndex != -1 {
 		jsonStr = strings.Join(lines[startIndex:], "\n")
-		logrus.Debugf("Extracted JSON string: %s", jsonStr)
+		logrus.Infof("Extracted JSON string: %s", jsonStr)
 	} else {
 		logrus.Errorf("could not find JSON output in the command response")
 		return "", fmt.Errorf("could not find JSON output in the command response")
@@ -233,14 +233,14 @@ func extractSha256FromOutput(output string) (string, error) {
 		return "", err
 	}
 
-	logrus.Debugf("Parsed %d artifacts from JSON", len(artifacts))
+	logrus.Infof("Parsed %d artifacts from JSON", len(artifacts))
 	
 	if len(artifacts) == 0 {
 		logrus.Errorf("no results found in jfrog output")
 		return "", fmt.Errorf("no results found in jfrog output")
 	}
 
-	logrus.Debugf("Returning SHA256: %s", artifacts[0].Sha256)
+	logrus.Infof("Returning SHA256: %s", artifacts[0].Sha256)
 	return artifacts[0].Sha256, nil
 }
 
